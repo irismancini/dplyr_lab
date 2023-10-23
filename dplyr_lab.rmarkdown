@@ -5,7 +5,9 @@ format: html
 editor: visual
 ---
 
+
 ## Exercise 1 :
+
 
 ```{r, echo = FALSE, message = FALSE}
 library(here)
@@ -17,16 +19,20 @@ dropout <- readRDS("/Users/irismancini-hugon/Documents/dplyr_lab/Dropout.Rds")
 spotify <- readRDS("/Users/irismancini-hugon/Documents/dplyr_lab/spotify_new.Rds")
 ```
 
+
 ### Question 1:
+
 
 ```{r, echo = FALSE, message = FALSE}
 u_spotify <-  spotify |>
  distinct(title, artist, `top genre`)
 ```
 
+
 The dataset contains `r nrow(u_spotify)`\`songs.
 
 ### Question 2:
+
 
 ```{r, echo = FALSE, message = FALSE}
 spotify |>
@@ -35,7 +41,9 @@ spotify |>
   knitr::kable()
 ```
 
+
 ### Question 3:
+
 
 ```{r, echo = FALSE, message = FALSE}
 sp_number <- 
@@ -48,9 +56,11 @@ pop_songnb <- sp_number |> slice_max(n_song)
 pop_songnb1 <- pop_songnb[1,2]
 ```
 
+
 The most popular artist has `r pop_songnb1` songs and this artist is `r popular_artist`\`
 
 ### Question 4 :
+
 
 ```{r, echo = FALSE, message = FALSE}
 spotify |>
@@ -58,7 +68,9 @@ spotify |>
   summarise(n(), min(bpm), max(bpm), mean(bpm), median(bpm))
 ```
 
+
 ### Question 5 :
+
 
 ```{r, echo = FALSE, message = FALSE}
 df_median <- 
@@ -70,7 +82,9 @@ df_median |>
   knitr::kable()
 ```
 
+
 ### Question 6 :
+
 
 ```{r, echo = FALSE, message = FALSE}
 df_long <- df_median |>
@@ -88,9 +102,11 @@ ggplot(df_long, aes(x = year, y = value)) +
        title = "Median of Energy and Dance ability")
 ```
 
+
 ## Exercise 2 :
 
 ### Question 1 :
+
 
 ```{r, echo = FALSE, message = FALSE}
 df_mage <- dropout |>
@@ -100,7 +116,9 @@ df_mage <- dropout |>
 df_mage
 ```
 
+
 ### Question 2:
+
 
 ```{r, echo = FALSE, message = FALSE}
 new_df <- df_mage |>
@@ -110,7 +128,9 @@ new_df |>
   knitr::kable()
 ```
 
+
 ### Question 3:
+
 
 ```{r, echo = FALSE, message = FALSE}
 means_cu <- dropout |>
@@ -121,7 +141,9 @@ means_cu |>
   knitr::kable()
 ```
 
+
 ### Question 4:
+
 
 ```{r, echo = FALSE, message = FALSE}
 final_table <- means_cu|>
@@ -133,3 +155,4 @@ final_table <- means_cu|>
 knitr::kable(final_table)
 
 ```
+
