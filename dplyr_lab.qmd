@@ -1,0 +1,158 @@
+---
+title: "dplyr lab"
+author: "iris mancini"
+format: html
+editor: visual
+---
+
+## Exercise 1 : 
+
+```{r}
+#| echo : false
+#| message : false
+library(here)
+library(tidyverse)
+library(dplyr)
+here::i_am("dplyr_lab.Rproj")
+
+dropout <- readRDS("/Users/irismancini-hugon/Documents/dplyr_lab/Dropout.Rds")
+spotify <- readRDS("/Users/irismancini-hugon/Documents/dplyr_lab/spotify_new.Rds")
+```
+
+### Question 1: 
+
+```{r}
+#| echo : false
+#| message : false
+
+u_spotify <-  spotify |>
+ distinct(title, artist, `top genre`)
+```
+
+The dataset contains `r nrow(u_spotify)`\`songs.
+
+### Question 2: 
+
+```{r}
+#| echo : false
+#| message : false
+spotify |>
+  group_by(year) |>
+  summarise(n()) |>
+  knitr::kable()
+```
+
+### Question 3: 
+
+```{r}
+#| echo : false
+#| message : false
+sp_number <- 
+spotify |> 
+  group_by(artist) |>
+  summarise(n_song = n())
+
+popular_artist <- sp_number |> slice_max(n_song) |> pull(artist)
+pop_songnb <- sp_number |> slice_max(n_song)
+```
+
+The most popular artist has `r pop_songbn[1,2]`\`songs and this artist is `r popular_artist`\`
+
+### Question 4 : 
+
+```{r}
+#| echo : false
+#| message : false
+spotify |>
+  group_by(`top genre`) |>
+  summarise(n(), min(bpm), max(bpm), mean(bpm), median(bpm))
+```
+
+### Question 5 : 
+
+```{r}
+#| echo : false
+#| message : false
+df_median <- 
+  spotify |> 
+    group_by(year) |>
+    summarise(m_energy = median(nrgy), m_dance = median(dnce))
+
+df_median |> 
+  knitr::kable()
+```
+
+### Question 6 : 
+
+```{r}
+#| echo : false
+#| message : false
+df_long <- df_median |>
+  pivot_longer(cols = c(m_energy, m_dance), names_to = 
+"variable", values_to = "value") |>
+  mutate(variable = recode(variable, m_energy = "Energy", 
+m_dance = "Danceability"))
+
+ggplot(df_long, aes(x = year, y = value)) +
+  geom_line(aes(color = variable)) +
+  scale_color_manual(values = c("Energy" = "lightblue", "Danceability" = "purple")) +
+  labs(x = "Year",
+       y = "",
+       color = "Variable",
+       title = "Median of Energy and Dance ability")
+```
+
+## Exercise 2 : 
+
+### Question 1 : 
+
+```{r}
+#| echo : false
+#| message : false
+df_mage <- dropout |>
+    group_by(Gender, `Marital status`) |>
+    summarize(median(`Age at enrollment`)) 
+
+df_mage
+```
+
+### Question 2: 
+
+```{r}
+#| echo : false
+#| message : false
+new_df <- df_mage |>
+  pivot_wider(names_from = Gender, values_from = `median(\`Age at enrollment\`)`) |>
+  rename(`Marital status` = `Marital status`) 
+new_df |>
+  knitr::kable()
+```
+
+### Question 3: 
+
+```{r}
+#| echo : false
+#| message : false
+
+means_cu <- dropout |>
+  group_by(Target) |>
+  summarise(across(starts_with("Curricular units"), mean))
+
+means_cu |>
+  knitr::kable()
+```
+
+### Question 4: 
+
+```{r}
+#| echo : false
+#| message : false
+final_table <- means_cu|>
+  select(1:4)|>
+  pivot_longer(starts_with("Curricular units"), names_to = 
+"Units") |>
+  pivot_wider(names_from = Target)
+
+knitr::kable(final_table)
+
+```
